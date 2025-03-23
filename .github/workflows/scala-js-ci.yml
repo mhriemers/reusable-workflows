@@ -1,0 +1,56 @@
+name: Scala.js Continuous Integration
+
+on:
+  workflow_call:
+    inputs:
+      java-distribution:
+        description: 'Java distribution to use'
+        required: false
+        type: string
+        default: 'temurin'
+      java-version:
+        description: 'Java version to use'
+        required: false
+        type: string
+        default: '24'
+      node-version:
+        description: 'Node.js version to use'
+        required: false
+        type: string
+        default: '22'
+      sbt-command:
+        description: 'SBT command to run'
+        required: false
+        type: string
+        default: '+test'
+
+jobs:
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ inputs.java-distribution }}
+          java-version: ${{ inputs.java-version }}
+          cache: sbt
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Setup sbt
+        uses: sbt/setup-sbt@v1
+
+      - name: Run npm ci
+        run: npm ci
+
+      - name: Build and Test
+        run: sbt ${{ inputs.sbt-command }}
