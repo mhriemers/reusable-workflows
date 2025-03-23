@@ -23,9 +23,6 @@ on:
         required: false
         type: string
         default: '+test'
-    secrets:
-      GITHUB_TOKEN:
-        required: true
 
 jobs:
   build:
